@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/view/screens/signUp_screen.dart';
+
+import 'package:trackmint/view/screens/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -65,6 +66,9 @@ class LoginScreen extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               //login logic here..
+
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),
@@ -87,7 +91,7 @@ class LoginScreen extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SignUpScreen()));
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               },
               child: Text(
                 "Sign Up",
