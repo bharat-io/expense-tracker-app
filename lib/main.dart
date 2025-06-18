@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trackmint/view/screens/home_screen.dart';
 import 'package:trackmint/view/screens/login_screen.dart';
 import 'package:trackmint/view/screens/signUp_screen.dart';
+import 'package:trackmint/view/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
-        home: LoginScreen());
+        home: SplashScreen());
   }
 }
