@@ -11,7 +11,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("data"),
+      bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.home))
+      ]),
     );
   }
 }
