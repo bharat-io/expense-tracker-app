@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ExpenseListCard extends StatelessWidget {
-  const ExpenseListCard({super.key});
+  const ExpenseListCard(
+      {super.key,
+      required this.spentDate,
+      required this.spentAmount,
+      required this.shoppingIcons,
+      required this.categoryText,
+      required this.descriptionText,
+      required this.price});
+  final String spentDate;
+  final int spentAmount;
+  final IconData shoppingIcons;
+  final String categoryText;
+  final String descriptionText;
+  final double price;
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +29,16 @@ class ExpenseListCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            /// Header Row
+            /// Expense List Header Row..
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  "Tuesday, 14",
+                  spentDate,
                   style: TextStyle(fontSize: 22, color: Color(0xFF333333)),
                 ),
                 Text(
-                  "-₹1500",
+                  '-₹${spentAmount.toString()}',
                   style: TextStyle(fontSize: 22, color: Color(0xFF333333)),
                 ),
               ],
@@ -34,29 +47,29 @@ class ExpenseListCard extends StatelessWidget {
             const Divider(height: 25),
             _buildExpensesItem(
               context,
-              icon: Icons.shopping_cart,
+              icon: shoppingIcons,
               iconBgColor: Color(0xFFD1F5FF),
-              category: "Groceries",
-              description: "Fruits & Vegetables",
-              amount: 391,
+              category: categoryText,
+              description: descriptionText,
+              amount: price,
             ),
 
-            _buildExpensesItem(
-              context,
-              icon: Icons.electrical_services_outlined,
-              iconBgColor: Color(0xFFFFD6D6),
-              category: "Electronics",
-              description: "Headphones",
-              amount: 799,
-            ),
-            _buildExpensesItem(
-              context,
-              icon: Icons.fastfood_rounded,
-              iconBgColor: Color(0xFFFFE7C7),
-              category: "Food",
-              description: "Snacks & Drinks",
-              amount: 310,
-            ),
+            // _buildExpensesItem(
+            //   context,
+            //   icon: Icons.electrical_services_outlined,
+            //   iconBgColor: Color(0xFFFFD6D6),
+            //   category: "Electronics",
+            //   description: "Headphones",
+            //   amount: 799,
+            // ),
+            // _buildExpensesItem(
+            //   context,
+            //   icon: Icons.fastfood_rounded,
+            //   iconBgColor: Color(0xFFFFE7C7),
+            //   category: "Food",
+            //   description: "Snacks & Drinks",
+            //   amount: 310,
+            // ),
           ],
         ),
       ),
