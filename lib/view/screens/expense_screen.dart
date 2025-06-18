@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:trackmint/view/widgets/expense_list.dart';
 
 class ExpenseScreen extends StatefulWidget {
@@ -27,11 +26,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildProfileCard(
+              profileUrl: "assets/images/profile_image.jpg",
               context,
               greetingText: "Good morning",
               userName: "Rc.Johan",
@@ -70,33 +70,25 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   }
 
   Widget _buildProfileCard(BuildContext context,
-      {required String greetingText, required String userName}) {
+      {required String profileUrl,
+      required String greetingText,
+      required String userName}) {
     return Container(
-      child: Row(
-        children: [
-          CircleAvatar(radius: 25),
-          SizedBox(
-            width: 8,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                greetingText,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                userName,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-              ),
-            ],
-          ),
-          Spacer(),
-          _buildDropDown()
-        ],
-      ),
+      child: Row(children: [
+        CircleAvatar(
+          backgroundImage: AssetImage(profileUrl),
+          radius: 25,
+        ),
+        SizedBox(width: 8),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(greetingText,
+              style: TextStyle(fontSize: 16, color: Color(0xFF333333))),
+          Text(userName,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300))
+        ]),
+        Spacer(),
+        _buildDropDown()
+      ]),
     );
   }
 
@@ -106,66 +98,67 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
       decoration: BoxDecoration(
           color: Color(0xFFDDF6D2), borderRadius: BorderRadius.circular(8)),
       child: Center(
-          child: Row(
-        children: [
+        child: Row(children: [
           Padding(
             padding: const EdgeInsets.only(left: 10),
-            child: Text(
-              "This month",
-              style: TextStyle(fontSize: 15),
-            ),
+            child: Text("This month", style: TextStyle(fontSize: 15)),
           ),
-          Icon(Icons.arrow_drop_down_outlined),
-        ],
-      )),
+          Icon(Icons.arrow_drop_down_outlined)
+        ]),
+      ),
     );
   }
 
   Widget _buildTotalExpenseCard() {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: Color(0xFFB0DB9C),
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          color: Color(0xFFB0DB9C),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
               children: [
-                Text(
-                  "Expense Total",
-                  style: TextStyle(fontSize: 25, color: Color(0xFF333333)),
-                  // color: Color(0xFF333333)
-                  // Color(0xFF2F5D50)
-                ),
-                Text(
-                  "₹4,000",
-                  style: TextStyle(fontSize: 50, color: Color(0xFF333333)),
-                ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFDDF6D2),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: Text(
-                        "+₹250",
-                        style:
-                            TextStyle(fontSize: 20, color: Color(0xFF333333)),
-                      ),
-                    ),
                     Text(
-                      "  than the last month",
-                      style: TextStyle(fontSize: 18, color: Color(0xFF333333)),
+                      "Expense Total",
+                      style: TextStyle(fontSize: 25, color: Color(0xFF333333)),
+                      // color: Color(0xFF333333)
+                      // Color(0xFF2F5D50)
                     ),
+                    Text("₹4,000",
+                        style:
+                            TextStyle(fontSize: 50, color: Color(0xFF333333))),
+                    Row(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFDDF6D2),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Text(
+                              "+₹250",
+                              style: TextStyle(
+                                  fontSize: 20, color: Color(0xFF333333)),
+                            )),
+                        Text("  than the last month",
+                            style: TextStyle(
+                                fontSize: 18, color: Color(0xFF333333))),
+                      ],
+                    )
                   ],
                 )
               ],
-            )
-          ],
+            ),
+          ),
         ),
-      ),
+        Positioned(
+            top: 15,
+            right: -1,
+            child: Image.asset("assets/images/money_logo.png", height: 120))
+      ],
     );
   }
 }
