@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:trackmint/view/screens/home_screen.dart';
+import 'package:trackmint/ui/screens/home_screen.dart';
+import 'package:trackmint/ui/screens/signUp_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -91,7 +92,7 @@ class LoginScreen extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                    MaterialPageRoute(builder: (context) => SignUpScreen()));
               },
               child: Text(
                 "Sign Up",
