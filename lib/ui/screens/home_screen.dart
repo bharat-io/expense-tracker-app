@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/view/screens/expense_screen.dart';
+import 'package:trackmint/ui/screens/expense_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

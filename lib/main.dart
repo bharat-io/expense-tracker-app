@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/view/screens/home_screen.dart';
-import 'package:trackmint/view/screens/splash_screen.dart';
+import 'package:trackmint/ui/screens/splash_screen.dart';
+import 'package:trackmint/utill/app_routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +16,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
         ),
+        initialRoute: AppRoutes.SPLASHSCREEN,
+        routes: AppRoutes.routes,
         home: SplashScreen());
   }
 }

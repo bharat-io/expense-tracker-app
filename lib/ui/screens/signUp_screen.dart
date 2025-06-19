@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/view/screens/login_screen.dart';
+import 'package:trackmint/ui/screens/login_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});

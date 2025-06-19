@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/view/widgets/expense_list.dart';
+import 'package:trackmint/ui/widgets/expense_list.dart';
 
 class ExpenseScreen extends StatefulWidget {
   const ExpenseScreen({super.key});
