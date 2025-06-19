@@ -45,13 +45,19 @@ class ExpenseListCard extends StatelessWidget {
             ),
 
             const Divider(height: 25),
-            _buildExpensesItem(
-              context,
-              icon: shoppingIcons,
-              iconBgColor: Color(0xFFD1F5FF),
-              category: categoryText,
-              description: descriptionText,
-              amount: price,
+            SizedBox(
+              width: double.infinity,
+              height: 225,
+              child: ListView.builder(
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return _buildExpensesItem(context,
+                        icon: shoppingIcons,
+                        iconBgColor: Color(0xFFD1F5FF),
+                        category: categoryText,
+                        description: descriptionText,
+                        amount: price);
+                  }),
             ),
 
             // _buildExpensesItem(

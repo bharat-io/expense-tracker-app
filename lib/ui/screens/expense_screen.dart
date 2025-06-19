@@ -14,7 +14,14 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text("TrackMint"),
+        title: Text(
+          "TrackMint",
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontStyle: FontStyle.italic,
+            fontSize: 24,
+          ),
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10),
@@ -39,16 +46,13 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             SizedBox(
               height: 16,
             ),
-            _buildTotalExpenseCard(),
+            _buildTotalExpenseCard(totalExpenseAmount: "₹4,000"),
             SizedBox(
-              height: 16,
+              height: 12,
             ),
             Text(
               " Expense List",
               style: TextStyle(fontSize: 25, color: Color(0xFF333333)),
-            ),
-            SizedBox(
-              height: 16,
             ),
             Expanded(
                 child: ListView.builder(
@@ -82,7 +86,11 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         SizedBox(width: 8),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(greetingText,
-              style: TextStyle(fontSize: 16, color: Color(0xFF333333))),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w100,
+                  color: Color(0xFF333333))),
           Text(userName,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300))
         ]),
@@ -109,7 +117,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     );
   }
 
-  Widget _buildTotalExpenseCard() {
+  Widget _buildTotalExpenseCard({required String totalExpenseAmount}) {
     return Stack(
       children: [
         Card(
@@ -124,13 +132,21 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   children: [
                     Text(
                       "Expense Total",
-                      style: TextStyle(fontSize: 25, color: Color(0xFF333333)),
+                      style: TextStyle(fontSize: 22, color: Color(0xFF333333)),
                       // color: Color(0xFF333333)
                       // Color(0xFF2F5D50)
                     ),
-                    Text("₹4,000",
-                        style:
-                            TextStyle(fontSize: 50, color: Color(0xFF333333))),
+                    SizedBox(
+                      height: 3,
+                    ),
+                    Text(totalExpenseAmount,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            fontSize: 32,
+                            color: Color(0xFF333333))),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       children: [
                         Container(
@@ -145,7 +161,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                             )),
                         Text("  than the last month",
                             style: TextStyle(
-                                fontSize: 18, color: Color(0xFF333333))),
+                                fontSize: 16, color: Color(0xFF333333))),
                       ],
                     )
                   ],
@@ -155,9 +171,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           ),
         ),
         Positioned(
-            top: 15,
-            right: -1,
-            child: Image.asset("assets/images/money_logo.png", height: 120))
+            top: 20,
+            right: -14,
+            child: Image.asset("assets/images/graph.png", height: 122))
       ],
     );
   }
