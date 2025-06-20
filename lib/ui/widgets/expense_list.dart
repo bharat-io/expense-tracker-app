@@ -112,7 +112,7 @@ Widget _buildExpensesItem(BuildContext context,
           children: [
             Text(
               category,
-              style: const TextStyle(fontSize: 18, color: textColor),
+              style: const TextStyle(fontSize: 22, color: textColor),
             ),
             Text(
               description,

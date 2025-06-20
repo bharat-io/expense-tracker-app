@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:trackmint/data/model/expense_model.dart';
 
 class DbHelper {
   DbHelper._();
@@ -62,10 +63,35 @@ class DbHelper {
       $EXPENSE_BALANCE TEXT,
       $EXPENSE_CREATED_AT TEXT,
       $EXPENSE_CATEGORY_ID TEXT,
-      $EXPENSE_CREATED_AT TEXT,
       $EXPENSE_TYPE TEXT
       )
 ''');
     });
+  }
+
+// auth
+  Future registerUser({required userModel}) async {
+    var db = await initDB();
+    db.insert(TABLE_USER, userModel.toMap);
+  }
+
+// expense
+
+  Future<List<ExpenseModel>> fetchData() async {
+    var db = await initDB();
+    List<ExpenseModel> expenseList = [];
+    List<Map<String, dynamic>> expenseMapData;
+    expenseMapData = await db.query(TABLE_EXPENSE);
+    for (int i = 0; i < expenseMapData.length; i++) {
+      ExpenseModel expenseModel = ExpenseModel.fromMap(expenseMapData[i]);
+      expenseList.add(expenseModel);
+    }
+    return expenseList;
+  }
+
+  Future<bool> addData({required expenseModel}) async {
+    var db = await initDB();
+    int rowEffect = await db.insert(TABLE_EXPENSE, expenseModel.toMap);
+    return rowEffect > 0;
   }
 }

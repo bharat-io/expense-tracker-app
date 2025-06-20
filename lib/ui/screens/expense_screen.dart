@@ -17,8 +17,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         title: Text(
           "TrackMint",
           style: TextStyle(
-            fontWeight: FontWeight.w300,
-            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w400,
+            // fontStyle: FontStyle.italic,
             fontSize: 24,
           ),
         ),
@@ -33,7 +33,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+        padding: const EdgeInsets.only(top: 10, right: 16, left: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -46,7 +46,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             SizedBox(
               height: 16,
             ),
-            _buildTotalExpenseCard(totalExpenseAmount: "₹4,000"),
+            _buildTotalExpenseCard(totalExpenseAmount: "4,000"),
             SizedBox(
               height: 12,
             ),
@@ -62,7 +62,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                         spentDate: "TuesDay, 14",
                         spentAmount: 1500,
                         shoppingIcons: Icons.shopping_cart,
-                        categoryText: "Cloths",
+                        categoryText: "Electronics",
                         descriptionText: "jeans & T-shirts,shoes",
                         price: 1800,
                       );
@@ -87,12 +87,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(greetingText,
               style: TextStyle(
-                  fontSize: 16,
                   fontStyle: FontStyle.italic,
+                  fontSize: 15,
                   fontWeight: FontWeight.w100,
                   color: Color(0xFF333333))),
           Text(userName,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300))
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700))
         ]),
         Spacer(),
         _buildDropDown()
@@ -132,17 +132,20 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   children: [
                     Text(
                       "Expense Total",
-                      style: TextStyle(fontSize: 22, color: Color(0xFF333333)),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w200,
+                          color: Color(0xFF333333)),
                       // color: Color(0xFF333333)
                       // Color(0xFF2F5D50)
                     ),
                     SizedBox(
                       height: 3,
                     ),
-                    Text(totalExpenseAmount,
+                    Text('₹$totalExpenseAmount',
                         style: TextStyle(
                             fontWeight: FontWeight.w100,
-                            fontSize: 32,
+                            fontSize: 29,
                             color: Color(0xFF333333))),
                     SizedBox(
                       height: 5,

@@ -66,8 +66,6 @@ class LoginScreen extends StatelessWidget {
             onPressed: () {
               //login logic here..
               Navigator.pushReplacementNamed(context, AppRoutes.HOME_SCREEN);
-              // Navigator.of(context)
-              //     .push(MaterialPageRoute(builder: (context) => HomeScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),
