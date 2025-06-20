@@ -62,6 +62,20 @@ class SignUpScreen extends StatelessWidget {
         TextField(
           obscureText: true,
           decoration: InputDecoration(
+            hintText: "Email",
+            prefixIcon: Icon(Icons.lock),
+            filled: true,
+            fillColor: Color(0xFFDDF6D2),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        TextField(
+          obscureText: true,
+          decoration: InputDecoration(
             hintText: "Password",
             prefixIcon: Icon(Icons.lock),
             filled: true,
