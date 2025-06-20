@@ -2,16 +2,18 @@ import 'package:trackmint/data/local/db_helper.dart';
 
 class ExpenseModel {
   int? expenseId;
+  int userId;
   String title;
   String description;
-  String amount;
-  String balance;
-  String type;
+  num amount;
+  num balance;
+  int type;
   String createdAt;
   String categoryId;
 
   ExpenseModel({
     this.expenseId,
+    required this.userId,
     required this.title,
     required this.description,
     required this.amount,
@@ -26,6 +28,7 @@ class ExpenseModel {
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
     return ExpenseModel(
         expenseId: map[DbHelper.EXPENSE_ID],
+        userId: map[DbHelper.USER_ID],
         title: map[DbHelper.EXPENSE_TITLE],
         description: map[DbHelper.EXPENSE_DESCRIPTION],
         amount: map[DbHelper.EXPENSE_AMOUNT],
