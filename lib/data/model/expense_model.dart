@@ -42,6 +42,7 @@ class ExpenseModel {
 
   Map<String, dynamic> toMap() {
     return {
+      DbHelper.USER_ID: userId,
       DbHelper.EXPENSE_TITLE: title,
       DbHelper.EXPENSE_DESCRIPTION: description,
       DbHelper.EXPENSE_AMOUNT: amount,
