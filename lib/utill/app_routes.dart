@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trackmint/ui/screens/expense_screen.dart';
 import 'package:trackmint/ui/screens/home_screen.dart';
 import 'package:trackmint/ui/screens/login_screen.dart';
-import 'package:trackmint/ui/screens/signUp_screen.dart';
+import 'package:trackmint/ui/screens/signup_screen.dart';
 import 'package:trackmint/ui/screens/splash_screen.dart';
 
 class AppRoutes {

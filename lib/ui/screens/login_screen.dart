@@ -1,21 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trackmint/bloc/user/user_bloc.dart';
+import 'package:trackmint/bloc/user/user_event.dart';
+import 'package:trackmint/bloc/user/user_state.dart';
 import 'package:trackmint/utill/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F2F2),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [_buildLoginForm(context)],
-        ),
-      ),
-    );
+        backgroundColor: Color(0xFFF2F2F2),
+        body: BlocConsumer<UserBloc, UserState>(builder: (context, state) {
+          if (state is UserLoadingState) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [_buildLoginForm(context)],
+            ),
+          );
+        }, listener: (context, state) {
+          if (state is UserSuccessState) {
+            Navigator.pushReplacementNamed(context, AppRoutes.HOME_SCREEN);
+          } else if (state is UserFailedState) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+          }
+        }));
   }
 
   Widget _buildLoginForm(BuildContext context) {
@@ -33,9 +53,10 @@ class LoginScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         TextField(
+          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            hintText: "Phone Number",
+            hintText: "email",
             prefixIcon: Icon(Icons.phone),
             filled: true,
             fillColor: Color(0xFFDDF6D2),
@@ -47,6 +68,7 @@ class LoginScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextField(
+          controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
             hintText: "Password",
@@ -64,8 +86,9 @@ class LoginScreen extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              //login logic here..
-              Navigator.pushReplacementNamed(context, AppRoutes.HOME_SCREEN);
+              context.read<UserBloc>().add(LoginEvent(
+                  email: emailController.text,
+                  password: passwordController.text));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),
@@ -87,7 +110,7 @@ class LoginScreen extends StatelessWidget {
             Text("Don't have an account? "),
             InkWell(
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.SIGNUPSCREEN);
+                Navigator.pushNamed(context, AppRoutes.SIGNUPSCREEN);
               },
               child: Text(
                 "Sign Up",
