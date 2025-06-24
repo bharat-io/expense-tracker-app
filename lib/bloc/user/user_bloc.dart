@@ -11,6 +11,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<SignUpEvent>(
       (event, emit) async {
         emit(UserLoadingState());
+        await Future.delayed(Duration(seconds: 1));
         String message =
             await userRepository.signUpUser(userModel: event.userModel);
         if (message == "Successfully registerd!") {

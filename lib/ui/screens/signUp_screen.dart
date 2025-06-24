@@ -4,7 +4,7 @@ import 'package:trackmint/bloc/user/user_bloc.dart';
 import 'package:trackmint/bloc/user/user_event.dart';
 import 'package:trackmint/bloc/user/user_state.dart';
 import 'package:trackmint/data/model/user_model.dart';
-import 'package:trackmint/utill/app_routes.dart';
+import 'package:trackmint/ui/widgets/app_snackbar.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
@@ -12,38 +12,51 @@ class SignUpScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
-      body: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          if (state is UserSuccessState) {
-            Navigator.pop(context);
-          } else if (state is UserFailedState) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
-          }
-        },
-        child: BlocBuilder<UserBloc, UserState>(
-          builder: (context, state) {
-            if (state is UserLoadingState) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
             return SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 230, left: 18, right: 18),
-                    child: _buildTextFields(context),
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BlocConsumer<UserBloc, UserState>(
+                        builder: (context, state) {
+                          return Column(
+                            children: [
+                              _buildTextFields(context),
+                            ],
+                          );
+                        },
+                        listener: (context, state) {
+                          if (state is UserLoadingState) {
+                            isLoading = true;
+                          } else if (state is UserSuccessState) {
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                              isLoading = true;
+                            }
+                          } else if (state is UserFailedState) {
+                            AppSnackbar.showSnackBar(
+                              context,
+                              contentText: state.errorMessage,
+                            );
+                            isLoading = false;
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           },
@@ -129,7 +142,31 @@ class SignUpScreen extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              // signUp logic
+              if (nameController.text.isEmpty &&
+                  phoneController.text.isEmpty &&
+                  emailController.text.isEmpty &&
+                  passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter all valid details!");
+                return;
+              } else if (nameController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid name!");
+                return;
+              } else if (phoneController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid phoneNumber!");
+                return;
+              } else if (emailController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid email!");
+                return;
+              } else if (passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid password!");
+                return;
+              }
+
               context.read<UserBloc>().add(SignUpEvent(
                   userModel: UserModel(
                       name: nameController.text,
@@ -144,10 +181,30 @@ class SignUpScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              "Sign Up",
-              style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
-            ),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Sign Up",
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                          height: 15,
+                          width: 15,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                          )),
+                    ],
+                  )
+                : const Text(
+                    "Sign Up",
+                    style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                  ),
           ),
         ),
         const SizedBox(height: 12),
@@ -157,7 +214,7 @@ class SignUpScreen extends StatelessWidget {
             Text("Already have an account? "),
             InkWell(
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.LOGINSCREEN);
+                Navigator.of(context).pop();
               },
               child: Text(
                 "Login",

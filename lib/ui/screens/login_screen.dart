@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trackmint/bloc/user/user_bloc.dart';
 import 'package:trackmint/bloc/user/user_event.dart';
 import 'package:trackmint/bloc/user/user_state.dart';
+import 'package:trackmint/ui/widgets/app_snackbar.dart';
 import 'package:trackmint/utill/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -10,30 +11,30 @@ class LoginScreen extends StatelessWidget {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xFFF2F2F2),
         body: BlocConsumer<UserBloc, UserState>(builder: (context, state) {
-          if (state is UserLoadingState) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
           return Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [_buildLoginForm(context)],
+              children: [
+                _buildLoginForm(context),
+              ],
             ),
           );
         }, listener: (context, state) {
-          if (state is UserSuccessState) {
-            Navigator.pushReplacementNamed(context, AppRoutes.HOME_SCREEN);
+          if (state is UserLoadingState) {
+            isLoading = true;
+          } else if (state is UserSuccessState) {
+            isLoading = false;
+            Navigator.of(context).pushReplacementNamed(AppRoutes.HOME_SCREEN);
           } else if (state is UserFailedState) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            isLoading = false;
+            AppSnackbar.showSnackBar(context, contentText: state.errorMessage);
           }
         }));
   }
@@ -86,6 +87,20 @@ class LoginScreen extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
+              if (emailController.text.isEmpty &&
+                  passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Please enter valid details!");
+                return;
+              } else if (emailController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Please enter valid email!");
+                return;
+              } else if (passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Plese enter valid password");
+                return;
+              }
               context.read<UserBloc>().add(LoginEvent(
                   email: emailController.text,
                   password: passwordController.text));
@@ -97,10 +112,31 @@ class LoginScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              "Login",
-              style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
-            ),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Login",
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                        height: 15,
+                        width: 15,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ),
+                      )
+                    ],
+                  )
+                : const Text(
+                    "Login",
+                    style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                  ),
           ),
         ),
         const SizedBox(height: 12),

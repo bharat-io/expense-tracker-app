@@ -30,7 +30,7 @@ class UserRepository {
       return "Successfully login!";
     } else {
       print("Login Failed");
-      return "Login failed!";
+      return "Account does not exist with this email!";
     }
   }
 }
