@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trackmint/bloc/user/user_bloc.dart';
 import 'package:trackmint/bloc/user/user_event.dart';
 import 'package:trackmint/bloc/user/user_state.dart';
@@ -12,6 +13,11 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+  // void isAuthenticated() async {
+  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  //   sharedPreferences.
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +37,7 @@ class LoginScreen extends StatelessWidget {
             isLoading = true;
           } else if (state is UserSuccessState) {
             isLoading = false;
+            AppSnackbar.showSnackBar(context, contentText: "Login successful!");
             Navigator.of(context).pushReplacementNamed(AppRoutes.HOME_SCREEN);
           } else if (state is UserFailedState) {
             isLoading = false;
@@ -86,7 +93,7 @@ class LoginScreen extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (emailController.text.isEmpty &&
                   passwordController.text.isEmpty) {
                 AppSnackbar.showSnackBar(context,
@@ -104,6 +111,10 @@ class LoginScreen extends StatelessWidget {
               context.read<UserBloc>().add(LoginEvent(
                   email: emailController.text,
                   password: passwordController.text));
+
+              // SharedPreferences sharedPreferences =
+              //     await SharedPreferences.getInstance();
+              //     sharedPreferences.setInt(key, value)
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),

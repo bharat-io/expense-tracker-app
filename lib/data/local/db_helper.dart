@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:trackmint/data/model/expense_model.dart';
+import 'package:trackmint/data/model/user_model.dart';
+import 'package:trackmint/utill/app_constant.dart';
 
 class DbHelper {
   DbHelper._();
@@ -87,11 +90,17 @@ class DbHelper {
   Future<bool> checkEmailAndPasswordExist(
       {required String email, required String password}) async {
     var db = await initDB();
-    final result = await db.query(TABLE_USER,
+
+    List<Map<String, dynamic>> isUserExist = await db.query(TABLE_USER,
+        columns: [USER_ID],
         where: "$USER_EMAIL=? AND $USER_PASSWORD=?",
         whereArgs: [email, password]);
-
-    return result.isNotEmpty;
+    if (isUserExist.isNotEmpty) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setInt(AppConstant.TOKEN_KEY, isUserExist[0][USER_ID]);
+    }
+    return isUserExist.isNotEmpty;
   }
 
 // expense

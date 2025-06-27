@@ -23,14 +23,15 @@ class UserRepository {
 
   Future<String> loginUser(
       {required String userEmail, required String userPassword}) async {
-    bool userExist = await dbHelper.checkEmailAndPasswordExist(
-        email: userEmail, password: userPassword);
-    if (userExist) {
-      print("login success");
-      return "Successfully login!";
+    if (await dbHelper.isAlreadyEmailExist(email: userEmail)) {
+      if (await dbHelper.checkEmailAndPasswordExist(
+          email: userEmail, password: userPassword)) {
+        return "Successfully loged in !";
+      } else {
+        return "Incorrect password";
+      }
     } else {
-      print("Login Failed");
-      return "Account does not exist with this email!";
+      return "user does not exist with this email!";
     }
   }
 }

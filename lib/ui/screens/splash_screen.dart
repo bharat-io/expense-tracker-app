@@ -1,8 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trackmint/ui/screens/login_screen.dart';
+import 'package:trackmint/utill/app_constant.dart';
+import 'package:trackmint/utill/app_routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,11 +16,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      checkIsAuthenticated();
     });
+  }
+
+  void checkIsAuthenticated() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    int? userToken = sharedPreferences.getInt(AppConstant.TOKEN_KEY) ?? 0;
+    String navigateTo = AppRoutes.LOGINSCREEN;
+    if (userToken > 0) {
+      navigateTo = AppRoutes.HOME_SCREEN;
+    }
+    Navigator.pushReplacementNamed(context, navigateTo);
   }
 
   @override

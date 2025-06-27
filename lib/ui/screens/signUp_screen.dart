@@ -41,10 +41,12 @@ class SignUpScreen extends StatelessWidget {
                           if (state is UserLoadingState) {
                             isLoading = true;
                           } else if (state is UserSuccessState) {
-                            if (context.mounted) {
-                              Navigator.of(context).pop();
-                              isLoading = true;
-                            }
+                            isLoading = false;
+                            // AppSnackbar.showSnackBar(
+                            //   context,
+                            //   contentText: "User regiester successfully!",
+                            // );
+                            Navigator.of(context).pop();
                           } else if (state is UserFailedState) {
                             AppSnackbar.showSnackBar(
                               context,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trackmint/ui/screens/add_expense_screen.dart';
 import 'package:trackmint/ui/screens/expense_screen.dart';
+import 'package:trackmint/ui/screens/setting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,15 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Center(
       child: Text("insight page"),
     ),
-    Center(
-      child: Text("Add Expense page"),
-    ),
+    AddExpenseScreen(),
     Center(
       child: Text("Notification page"),
     ),
-    Center(
-      child: Text("Profile page "),
-    )
+    SettingScreen()
   ];
   @override
   Widget build(BuildContext context) {
