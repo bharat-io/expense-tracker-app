@@ -14,6 +14,15 @@ class UserModel {
       required this.password});
 
   // model to map
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+        name: DbHelper.USER_NAME,
+        email: DbHelper.USER_EMAIL,
+        phone: DbHelper.USER_PHONE,
+        password: DbHelper.USER_PASSWORD);
+  }
+
+  // map to model
 
   Map<String, dynamic> toMap() {
     return {

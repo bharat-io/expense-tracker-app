@@ -1,9 +1,11 @@
 import 'dart:io';
-
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:trackmint/data/model/expense_model.dart';
+import 'package:trackmint/data/model/user_model.dart';
+import 'package:trackmint/utill/app_constant.dart';
 
 class DbHelper {
   DbHelper._();
@@ -56,7 +58,8 @@ class DbHelper {
       )
     ''');
       db.execute(''' CREATE TABLE $TABLE_EXPENSE(
-      $EXPENSE_ID INTEGER PRIMARY AUTOINCREMENR,
+      $EXPENSE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      $USER_ID INTEGER
       $EXPENSE_TITLE TEXT,
       $EXPENSE_DESCRIPTION TEXT,
       $EXPENSE_AMOUNT TEXT,
@@ -70,9 +73,34 @@ class DbHelper {
   }
 
 // auth
-  Future registerUser({required userModel}) async {
+  Future<bool> registerUser({required userModel}) async {
     var db = await initDB();
-    db.insert(TABLE_USER, userModel.toMap);
+    int rowEffected = await db.insert(TABLE_USER, userModel.toMap());
+    return rowEffected > 0;
+  }
+
+  Future<bool> isAlreadyEmailExist({required String email}) async {
+    var db = await initDB();
+    final result =
+        await db.query(TABLE_USER, where: "$USER_EMAIL=?", whereArgs: [email]);
+
+    return result.isNotEmpty;
+  }
+
+  Future<bool> checkEmailAndPasswordExist(
+      {required String email, required String password}) async {
+    var db = await initDB();
+
+    List<Map<String, dynamic>> isUserExist = await db.query(TABLE_USER,
+        columns: [USER_ID],
+        where: "$USER_EMAIL=? AND $USER_PASSWORD=?",
+        whereArgs: [email, password]);
+    if (isUserExist.isNotEmpty) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setInt(AppConstant.TOKEN_KEY, isUserExist[0][USER_ID]);
+    }
+    return isUserExist.isNotEmpty;
   }
 
 // expense

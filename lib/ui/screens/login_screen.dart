@@ -1,21 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trackmint/bloc/user/user_bloc.dart';
+import 'package:trackmint/bloc/user/user_event.dart';
+import 'package:trackmint/bloc/user/user_state.dart';
+import 'package:trackmint/ui/widgets/app_snackbar.dart';
 import 'package:trackmint/utill/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+  // void isAuthenticated() async {
+  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  //   sharedPreferences.
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F2F2),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [_buildLoginForm(context)],
-        ),
-      ),
-    );
+        backgroundColor: Color(0xFFF2F2F2),
+        body: BlocConsumer<UserBloc, UserState>(builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLoginForm(context),
+              ],
+            ),
+          );
+        }, listener: (context, state) {
+          if (state is UserLoadingState) {
+            isLoading = true;
+          } else if (state is UserSuccessState) {
+            isLoading = false;
+            AppSnackbar.showSnackBar(context, contentText: "Login successful!");
+            Navigator.of(context).pushReplacementNamed(AppRoutes.HOME_SCREEN);
+          } else if (state is UserFailedState) {
+            isLoading = false;
+            AppSnackbar.showSnackBar(context, contentText: state.errorMessage);
+          }
+        }));
   }
 
   Widget _buildLoginForm(BuildContext context) {
@@ -33,9 +61,10 @@ class LoginScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         TextField(
+          controller: emailController,
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
-            hintText: "Phone Number",
+            hintText: "email",
             prefixIcon: Icon(Icons.phone),
             filled: true,
             fillColor: Color(0xFFDDF6D2),
@@ -47,6 +76,7 @@ class LoginScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextField(
+          controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
             hintText: "Password",
@@ -63,9 +93,28 @@ class LoginScreen extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              //login logic here..
-              Navigator.pushReplacementNamed(context, AppRoutes.HOME_SCREEN);
+            onPressed: () async {
+              if (emailController.text.isEmpty &&
+                  passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Please enter valid details!");
+                return;
+              } else if (emailController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Please enter valid email!");
+                return;
+              } else if (passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "Plese enter valid password");
+                return;
+              }
+              context.read<UserBloc>().add(LoginEvent(
+                  email: emailController.text,
+                  password: passwordController.text));
+
+              // SharedPreferences sharedPreferences =
+              //     await SharedPreferences.getInstance();
+              //     sharedPreferences.setInt(key, value)
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),
@@ -74,10 +123,31 @@ class LoginScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              "Login",
-              style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
-            ),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Login",
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                        height: 15,
+                        width: 15,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ),
+                      )
+                    ],
+                  )
+                : const Text(
+                    "Login",
+                    style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                  ),
           ),
         ),
         const SizedBox(height: 12),
@@ -87,7 +157,7 @@ class LoginScreen extends StatelessWidget {
             Text("Don't have an account? "),
             InkWell(
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.SIGNUPSCREEN);
+                Navigator.pushNamed(context, AppRoutes.SIGNUPSCREEN);
               },
               child: Text(
                 "Sign Up",

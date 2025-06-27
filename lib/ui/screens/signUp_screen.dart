@@ -1,19 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:trackmint/ui/screens/login_screen.dart';
-import 'package:trackmint/utill/app_routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trackmint/bloc/user/user_bloc.dart';
+import 'package:trackmint/bloc/user/user_event.dart';
+import 'package:trackmint/bloc/user/user_state.dart';
+import 'package:trackmint/data/model/user_model.dart';
+import 'package:trackmint/ui/widgets/app_snackbar.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({super.key});
+  SignUpScreen({super.key});
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF2F2F2),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [_buildTextFields(context)],
+      backgroundColor: const Color(0xFFF2F2F2),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BlocConsumer<UserBloc, UserState>(
+                        builder: (context, state) {
+                          return Column(
+                            children: [
+                              _buildTextFields(context),
+                            ],
+                          );
+                        },
+                        listener: (context, state) {
+                          if (state is UserLoadingState) {
+                            isLoading = true;
+                          } else if (state is UserSuccessState) {
+                            isLoading = false;
+                            // AppSnackbar.showSnackBar(
+                            //   context,
+                            //   contentText: "User regiester successfully!",
+                            // );
+                            Navigator.of(context).pop();
+                          } else if (state is UserFailedState) {
+                            AppSnackbar.showSnackBar(
+                              context,
+                              contentText: state.errorMessage,
+                            );
+                            isLoading = false;
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -33,6 +81,7 @@ class SignUpScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         TextField(
+          controller: nameController,
           decoration: InputDecoration(
             hintText: "Full Name",
             prefixIcon: Icon(Icons.person),
@@ -46,10 +95,11 @@ class SignUpScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextField(
-          keyboardType: TextInputType.emailAddress,
+          controller: phoneController,
+          keyboardType: TextInputType.number,
           decoration: InputDecoration(
             hintText: "Phone Number",
-            prefixIcon: Icon(Icons.email),
+            prefixIcon: Icon(Icons.phone),
             filled: true,
             fillColor: Color(0xFFDDF6D2),
             border: OutlineInputBorder(
@@ -60,7 +110,9 @@ class SignUpScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextField(
-          obscureText: true,
+          keyboardType: TextInputType.emailAddress,
+          controller: emailController,
+          obscureText: false,
           decoration: InputDecoration(
             hintText: "Email",
             prefixIcon: Icon(Icons.lock),
@@ -74,7 +126,8 @@ class SignUpScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         TextField(
-          obscureText: true,
+          controller: passwordController,
+          obscureText: false,
           decoration: InputDecoration(
             hintText: "Password",
             prefixIcon: Icon(Icons.lock),
@@ -91,9 +144,37 @@ class SignUpScreen extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              // signUp logic
+              if (nameController.text.isEmpty &&
+                  phoneController.text.isEmpty &&
+                  emailController.text.isEmpty &&
+                  passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter all valid details!");
+                return;
+              } else if (nameController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid name!");
+                return;
+              } else if (phoneController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid phoneNumber!");
+                return;
+              } else if (emailController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid email!");
+                return;
+              } else if (passwordController.text.isEmpty) {
+                AppSnackbar.showSnackBar(context,
+                    contentText: "enter valid password!");
+                return;
+              }
 
-              Navigator.pushReplacementNamed(context, AppRoutes.LOGINSCREEN);
+              context.read<UserBloc>().add(SignUpEvent(
+                  userModel: UserModel(
+                      name: nameController.text,
+                      email: emailController.text,
+                      phone: phoneController.text.toString(),
+                      password: passwordController.text.toString())));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFB0DB9C),
@@ -102,10 +183,30 @@ class SignUpScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              "Sign Up",
-              style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
-            ),
+            child: isLoading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Sign Up",
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                          height: 15,
+                          width: 15,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                          )),
+                    ],
+                  )
+                : const Text(
+                    "Sign Up",
+                    style: TextStyle(fontSize: 16, color: Color(0xFF333333)),
+                  ),
           ),
         ),
         const SizedBox(height: 12),
@@ -115,7 +216,7 @@ class SignUpScreen extends StatelessWidget {
             Text("Already have an account? "),
             InkWell(
               onTap: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.LOGINSCREEN);
+                Navigator.of(context).pop();
               },
               child: Text(
                 "Login",
