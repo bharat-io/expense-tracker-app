@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trackmint/bloc/expense_bloc/expense_bloc.dart';
+import 'package:trackmint/bloc/expense_bloc/expense_event.dart';
+import 'package:trackmint/bloc/expense_bloc/expense_state.dart';
+import 'package:trackmint/ui/widgets/app_snackbar.dart';
 import 'package:trackmint/ui/widgets/expense_list.dart';
+import 'package:trackmint/utill/app_constant.dart';
 
 class ExpenseScreen extends StatefulWidget {
   const ExpenseScreen({super.key});
@@ -9,6 +15,13 @@ class ExpenseScreen extends StatefulWidget {
 }
 
 class _ExpenseScreenState extends State<ExpenseScreen> {
+  String? userName;
+  @override
+  void initState() {
+    super.initState();
+    context.read<ExpenseBloc>().add(FetchExpenseEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,44 +45,56 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 10, right: 16, left: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileCard(
-              profileUrl: "assets/images/profile_image.jpg",
-              context,
-              greetingText: "Good morning",
-              userName: "Rc.Johan",
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            _buildTotalExpenseCard(totalExpenseAmount: "4,000"),
-            SizedBox(
-              height: 12,
-            ),
-            Text(
-              " Expense List",
-              style: TextStyle(fontSize: 25, color: Color(0xFF333333)),
-            ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return ExpenseListCard(
-                        spentDate: "TuesDay, 14",
-                        spentAmount: 1500,
-                        shoppingIcons: Icons.shopping_cart,
-                        categoryText: "Electronics",
-                        descriptionText: "jeans & T-shirts,shoes",
-                        price: 1800,
-                      );
-                    }))
-          ],
-        ),
-      ),
+      body: BlocBuilder<ExpenseBloc, ExpenseState>(builder: (context, state) {
+        if (state is LoadingExpenseState) {
+          return CircularProgressIndicator();
+        } else if (state is LoadFaildState) {
+          AppSnackbar.showSnackBar(context,
+              contentText: Text(state.errorMessage));
+        } else if (state is LoadedExpenseState) {
+          return state.expenseModel.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10, right: 16, left: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildProfileCard(
+                        profileUrl: "assets/images/profile_image.jpg",
+                        context,
+                        greetingText: "Good morning",
+                        userName: userName!,
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      _buildTotalExpenseCard(totalExpenseAmount: "4,000"),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        " Expense List",
+                        style:
+                            TextStyle(fontSize: 25, color: Color(0xFF333333)),
+                      ),
+                      Expanded(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state.expenseModel.length,
+                              itemBuilder: (context, index) {
+                                final allExpenses = state.expenseModel[index];
+
+                                return ExpenseListCard(
+                                  spentDate: allExpenses.title,
+                                  spentAmount: allExpenses.totalAmount,
+                                  expeneseListData: allExpenses.expenseList,
+                                );
+                              }))
+                    ],
+                  ))
+              : Text("NO data found");
+        }
+        return Container();
+      }),
     );
   }
 

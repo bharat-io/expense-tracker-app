@@ -4,14 +4,26 @@ abstract class UserState {}
 
 class UserInitialState extends UserState {}
 
-class UserLoadingState extends UserState {}
+class UserSignUpLoadingState extends UserState {}
 
-class UserSuccessState extends UserState {
+class UserSignUpSuccessState extends UserState {
   List<UserModel>? userModel;
-  UserSuccessState({this.userModel});
+  UserSignUpSuccessState({this.userModel});
 }
 
-class UserFailedState extends UserState {
+class UserSignUpFailedState extends UserState {
   String errorMessage;
-  UserFailedState({required this.errorMessage});
+  UserSignUpFailedState({required this.errorMessage});
+}
+
+class UserLoginLoadingState extends UserState {}
+
+class UserLoginSuccessState extends UserState {
+  List<UserModel>? userModel;
+  UserLoginSuccessState({this.userModel});
+}
+
+class UserLoginFailedState extends UserState {
+  String errorMessage;
+  UserLoginFailedState({required this.errorMessage});
 }

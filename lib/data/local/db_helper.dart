@@ -59,14 +59,14 @@ class DbHelper {
     ''');
       db.execute(''' CREATE TABLE $TABLE_EXPENSE(
       $EXPENSE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-      $USER_ID INTEGER
+      $USER_ID INTEGER,
       $EXPENSE_TITLE TEXT,
       $EXPENSE_DESCRIPTION TEXT,
-      $EXPENSE_AMOUNT TEXT,
-      $EXPENSE_BALANCE TEXT,
+      $EXPENSE_AMOUNT INTEGER,
+      $EXPENSE_BALANCE INTEGER,
       $EXPENSE_CREATED_AT TEXT,
-      $EXPENSE_CATEGORY_ID TEXT,
-      $EXPENSE_TYPE TEXT
+      $EXPENSE_CATEGORY_ID INTEGER,
+      $EXPENSE_TYPE INTEGER
       )
 ''');
     });
@@ -105,21 +105,40 @@ class DbHelper {
 
 // expense
 
-  Future<List<ExpenseModel>> fetchData() async {
-    var db = await initDB();
-    List<ExpenseModel> expenseList = [];
-    List<Map<String, dynamic>> expenseMapData;
-    expenseMapData = await db.query(TABLE_EXPENSE);
-    for (int i = 0; i < expenseMapData.length; i++) {
-      ExpenseModel expenseModel = ExpenseModel.fromMap(expenseMapData[i]);
-      expenseList.add(expenseModel);
-    }
-    return expenseList;
+  Future<bool> insertExpnese({required ExpenseModel expenseModel}) async {
+    final db = await initDB();
+
+    int rowsEffected = await db.insert(TABLE_EXPENSE, expenseModel.toMap());
+    // print("rowsEffected:${rowsEffected}");
+    return rowsEffected > 0;
   }
 
-  Future<bool> addData({required expenseModel}) async {
-    var db = await initDB();
-    int rowEffect = await db.insert(TABLE_EXPENSE, expenseModel.toMap);
-    return rowEffect > 0;
+  Future<List<ExpenseModel>> getExpenseData() async {
+    final db = await initDB();
+    SharedPreferences sharedpref = await SharedPreferences.getInstance();
+    int uniqueUseId = sharedpref.getInt(AppConstant.TOKEN_KEY) ?? 0;
+    List<Map<String, dynamic>> mapExpenseData = await db
+        .query(TABLE_EXPENSE, where: "$USER_ID = ?", whereArgs: [uniqueUseId]);
+    List<ExpenseModel> allExpenses = [];
+    for (int i = 0; i < mapExpenseData.length; i++) {
+      allExpenses.add(ExpenseModel.fromMap(mapExpenseData[i]));
+    }
+
+    return allExpenses;
   }
+
+  // Future<List<ExpenseModel>> getAllExpenses() async {
+  //   var db = await initDB();
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   int uid = prefs.getInt(AppConstant.TOKEN_KEY) ?? 0;
+
+  //   List<Map<String, dynamic>> mData = await db
+  //       .query(TABLE_EXPENSE, where: "$USER_ID = ?", whereArgs: ["$uid"]);
+  //   List<ExpenseModel> allExp = [];
+
+  //   for (int i = 0; i < mData.length; i++) {
+  //     allExp.add(ExpenseModel.fromMap(mData[i]));
+  //   }
+  //   return allExp;
+  // }
 }

@@ -9,7 +9,7 @@ class ExpenseModel {
   num balance;
   int type;
   String createdAt;
-  String categoryId;
+  int categoryId;
 
   ExpenseModel({
     this.expenseId,

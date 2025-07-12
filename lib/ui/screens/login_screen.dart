@@ -33,13 +33,13 @@ class LoginScreen extends StatelessWidget {
             ),
           );
         }, listener: (context, state) {
-          if (state is UserLoadingState) {
+          if (state is UserLoginLoadingState) {
             isLoading = true;
-          } else if (state is UserSuccessState) {
+          } else if (state is UserLoginSuccessState) {
             isLoading = false;
             AppSnackbar.showSnackBar(context, contentText: "Login successful!");
             Navigator.of(context).pushReplacementNamed(AppRoutes.HOME_SCREEN);
-          } else if (state is UserFailedState) {
+          } else if (state is UserLoginFailedState) {
             isLoading = false;
             AppSnackbar.showSnackBar(context, contentText: state.errorMessage);
           }

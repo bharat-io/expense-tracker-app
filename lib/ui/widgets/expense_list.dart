@@ -1,20 +1,19 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:trackmint/data/model/expense_model.dart';
+import 'package:trackmint/utill/app_constant.dart';
 
 class ExpenseListCard extends StatelessWidget {
-  const ExpenseListCard(
-      {super.key,
-      required this.spentDate,
-      required this.spentAmount,
-      required this.shoppingIcons,
-      required this.categoryText,
-      required this.descriptionText,
-      required this.price});
+  ExpenseListCard({
+    super.key,
+    required this.spentDate,
+    required this.spentAmount,
+    required this.expeneseListData,
+  });
   final String spentDate;
-  final int spentAmount;
-  final IconData shoppingIcons;
-  final String categoryText;
-  final String descriptionText;
-  final double price;
+  final num spentAmount;
+  List<ExpenseModel> expeneseListData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +46,24 @@ class ExpenseListCard extends StatelessWidget {
             const Divider(height: 25),
             SizedBox(
               width: double.infinity,
-              height: 225,
               child: ListView.builder(
-                  itemCount: 5,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: expeneseListData.length,
                   itemBuilder: (context, index) {
+                    String imageUrl = AppConstant.categoryList
+                        .where((e) {
+                          return e.categoryId ==
+                              expeneseListData[index].categoryId;
+                        })
+                        .toList()[0]
+                        .cagtegoryImage;
+                    final expenses = expeneseListData[index];
                     return _buildExpensesItem(context,
-                        icon: shoppingIcons,
-                        iconBgColor: Color(0xFFD1F5FF),
-                        category: categoryText,
-                        description: descriptionText,
-                        amount: price);
+                        imagePath: imageUrl,
+                        title: expenses.title,
+                        description: expenses.description,
+                        amount: expenses.amount);
                   }),
             ),
 
@@ -84,11 +91,10 @@ class ExpenseListCard extends StatelessWidget {
 }
 
 Widget _buildExpensesItem(BuildContext context,
-    {required IconData icon,
-    required Color iconBgColor,
-    required String category,
+    {required String imagePath,
+    required String title,
     required String description,
-    required double amount}) {
+    required num amount}) {
   const textColor = Color(0xFF333333);
 
   return Padding(
@@ -96,22 +102,22 @@ Widget _buildExpensesItem(BuildContext context,
     child: Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: iconBgColor,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Icon(
-            icon,
-            size: 30,
-          ),
-        ),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors
+                  .primaries[Random().nextInt(Colors.accents.length)].shade100,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Image.asset(
+              imagePath,
+              width: 30,
+            )),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              category,
+              title,
               style: const TextStyle(fontSize: 22, color: textColor),
             ),
             Text(
