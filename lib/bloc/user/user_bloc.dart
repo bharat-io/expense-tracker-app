@@ -4,21 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trackmint/bloc/user/user_event.dart';
 import 'package:trackmint/bloc/user/user_state.dart';
 import 'package:trackmint/data/model/user_model.dart';
-import 'package:trackmint/data/repository/user_repository.dart';
+import 'package:trackmint/repository/user_repository.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserRepository userRepository;
   UserBloc({required this.userRepository}) : super(UserInitialState()) {
     on<SignUpEvent>(
       (event, emit) async {
-        emit(UserLoadingState());
+        emit(UserSignUpLoadingState());
         await Future.delayed(Duration(seconds: 1));
         String message =
             await userRepository.signUpUser(userModel: event.userModel);
         if (message == "Successfully registerd!") {
-          emit(UserSuccessState());
+          emit(UserSignUpSuccessState());
         } else {
-          emit(UserFailedState(errorMessage: message));
+          emit(UserSignUpFailedState(errorMessage: message));
           print(message);
         }
       },
@@ -26,15 +26,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     on<LoginEvent>(
       (event, emit) async {
-        emit(UserLoadingState());
+        emit(UserLoginLoadingState());
 
         await Future.delayed(Duration(seconds: 1));
         String message = await userRepository.loginUser(
             userEmail: event.email, userPassword: event.password);
         if (message == "Successfully loged in !") {
-          emit(UserSuccessState());
+          emit(UserLoginSuccessState());
         } else {
-          emit(UserFailedState(errorMessage: message));
+          emit(UserLoginFailedState(errorMessage: message));
           print(message);
         }
       },

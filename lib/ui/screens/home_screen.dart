@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trackmint/ui/screens/add_expense_screen.dart';
 import 'package:trackmint/ui/screens/expense_screen.dart';
+import 'package:trackmint/ui/screens/login_screen.dart';
 import 'package:trackmint/ui/screens/setting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> pages = [
     ExpenseScreen(),
     Center(
-      child: Text("insight page"),
+      child: LoginScreen(),
     ),
     AddExpenseScreen(),
     Center(

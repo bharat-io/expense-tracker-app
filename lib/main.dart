@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
+import 'package:trackmint/bloc/expense_bloc/expense_bloc.dart';
 import 'package:trackmint/bloc/user/user_bloc.dart';
 import 'package:trackmint/data/local/db_helper.dart';
-import 'package:trackmint/data/repository/user_repository.dart';
+import 'package:trackmint/repository/expense_repository.dart';
+import 'package:trackmint/repository/user_repository.dart';
 import 'package:trackmint/utill/app_routes.dart';
 
 void main() {
@@ -24,6 +27,10 @@ class MyApp extends StatelessWidget {
             userRepository: UserRepository(dbHelper: dbHelper),
           ),
         ),
+        BlocProvider<ExpenseBloc>(
+            create: (context) => ExpenseBloc(
+                expenseRepository:
+                    ExpenseRepository(dbHelper: DbHelper.getInstance())))
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

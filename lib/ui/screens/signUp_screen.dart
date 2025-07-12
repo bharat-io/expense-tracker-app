@@ -38,16 +38,16 @@ class SignUpScreen extends StatelessWidget {
                           );
                         },
                         listener: (context, state) {
-                          if (state is UserLoadingState) {
+                          if (state is UserSignUpLoadingState) {
                             isLoading = true;
-                          } else if (state is UserSuccessState) {
+                          } else if (state is UserSignUpSuccessState) {
                             isLoading = false;
-                            // AppSnackbar.showSnackBar(
-                            //   context,
-                            //   contentText: "User regiester successfully!",
-                            // );
+                            AppSnackbar.showSnackBar(
+                              context,
+                              contentText: "User regiester successfully!",
+                            );
                             Navigator.of(context).pop();
-                          } else if (state is UserFailedState) {
+                          } else if (state is UserSignUpFailedState) {
                             AppSnackbar.showSnackBar(
                               context,
                               contentText: state.errorMessage,
