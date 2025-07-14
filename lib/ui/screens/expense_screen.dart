@@ -16,6 +16,8 @@ class ExpenseScreen extends StatefulWidget {
 
 class _ExpenseScreenState extends State<ExpenseScreen> {
   String? userName;
+  final List<String> dropDownItems = ["Date", "Month", "Year", "Category"];
+  String selectedValue = "Date"; // Must match one of the items
   @override
   void initState() {
     super.initState();
@@ -68,6 +70,10 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                           ),
                           Spacer(),
                           AppDropdown(
+                            initialSelection: selectedValue,
+                            dropdownMenuEntries: dropDownItems.map((e) {
+                              return DropdownMenuEntry(value: e, label: e);
+                            }).toList(),
                             onSelected: (value) {
                               int filterType;
 
@@ -80,6 +86,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                               } else {
                                 filterType = 4;
                               }
+
                               context.read<ExpenseBloc>().add(
                                   FetchExpenseEvent(filterType: filterType));
                             },
