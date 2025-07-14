@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trackmint/bloc/expense_bloc/expense_bloc.dart';
 import 'package:trackmint/bloc/expense_bloc/expense_event.dart';
 import 'package:trackmint/bloc/expense_bloc/expense_state.dart';
+import 'package:trackmint/ui/widgets/app_dropdown.dart';
 import 'package:trackmint/ui/widgets/app_snackbar.dart';
 import 'package:trackmint/ui/widgets/expense_list.dart';
-import 'package:trackmint/utill/app_constant.dart';
 
 class ExpenseScreen extends StatefulWidget {
   const ExpenseScreen({super.key});
@@ -19,7 +19,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ExpenseBloc>().add(FetchExpenseEvent());
+    context.read<ExpenseBloc>().add(FetchExpenseEvent(filterType: 1));
   }
 
   @override
@@ -58,11 +58,33 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildProfileCard(
-                        profileUrl: "assets/images/profile_image.jpg",
-                        context,
-                        greetingText: "Good morning",
-                        userName: userName!,
+                      Row(
+                        children: [
+                          _buildProfileCard(
+                            profileUrl: "assets/images/profile_image.jpg",
+                            context,
+                            greetingText: "Good morning",
+                            userName: "R.C johan",
+                          ),
+                          Spacer(),
+                          AppDropdown(
+                            onSelected: (value) {
+                              int filterType;
+
+                              if (value == "Date") {
+                                filterType = 1;
+                              } else if (value == "Month") {
+                                filterType = 2;
+                              } else if (value == "Year") {
+                                filterType = 3;
+                              } else {
+                                filterType = 4;
+                              }
+                              context.read<ExpenseBloc>().add(
+                                  FetchExpenseEvent(filterType: filterType));
+                            },
+                          )
+                        ],
                       ),
                       SizedBox(
                         height: 16,
@@ -119,26 +141,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           Text(userName,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700))
         ]),
-        Spacer(),
-        _buildDropDown()
       ]),
-    );
-  }
-
-  Widget _buildDropDown() {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-          color: Color(0xFFDDF6D2), borderRadius: BorderRadius.circular(8)),
-      child: Center(
-        child: Row(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text("This month", style: TextStyle(fontSize: 15)),
-          ),
-          Icon(Icons.arrow_drop_down_outlined)
-        ]),
-      ),
     );
   }
 

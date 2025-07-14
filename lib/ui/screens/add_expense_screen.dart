@@ -220,7 +220,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     AppSnackbar.showSnackBar(context,
                         contentText: Text(state.errorMessage));
                   } else if (state is LoadedExpenseState) {
-                    Navigator.of(context).pushNamed(AppRoutes.EXPENSESCREEN);
+                    Navigator.pop(context, true);
                   }
                 },
                 child: ElevatedButton(

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trackmint/ui/screens/login_screen.dart';
 import 'package:trackmint/utill/app_constant.dart';
 import 'package:trackmint/utill/app_routes.dart';
 
